@@ -14,10 +14,23 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - uses: vn7n24fzkq/github-profile-summary-cards@release
+      - name: Generate cards
+        uses: vn7n24fzkq/github-profile-summary-cards@release
         with:
           USERNAME: IanLiYi1996
           BRANCH_NAME: stats
           UTC_OFFSET: 8
+          AUTO_PUSH: "false"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Push to stats branch
+        run: |
+          cd profile-summary-card-output
+          git init
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git checkout -b stats
+          git add -A
+          git commit -m "Update stats cards"
+          git push --force https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/IanLiYi1996/IanLiYi1996.git stats
